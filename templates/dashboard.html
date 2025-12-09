@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Smart Irrigation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dash-body">
+
+    <div class="nav">
+        <h2>🌧️ Irrigation Dashboard</h2>
+        <a href="/" class="nav-link">Home</a>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="card">
+            <h3>🌱 Soil Moisture Level</h3>
+            <p class="value">{{ moisture }}%</p>
+        </div>
+
+        <div class="card">
+            <h3>💧 Pump Status</h3>
+            <p class="value">{{ pump_status }}</p>
+        </div>
+
+        <div class="card">
+            <h3>⏳ Last Irrigation Time</h3>
+            <p class="value">{{ last_irrigation }}</p>
+        </div>
+    </div>
+
+</body>
+</html>
