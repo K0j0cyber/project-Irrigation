@@ -1,37 +1,38 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, redirect, url_for
+import random
+from datetime import datetime
 
 app = Flask(__name__)
 
-history = []  # store moisture readings
+pump_status = "OFF"
 
+@app.route("/")
+def welcome():
+    return render_template("welcome.html")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    result = None
+@app.route("/dashboard")
+def dashboard():
+    global pump_status
+    moisture = random.randint(20, 80)
+    last_irrigation = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return render_template(
+        "dashboard.html",
+        moisture=moisture,
+        pump_status=pump_status,
+        last_irrigation=last_irrigation
+    )
 
-    if request.method == "POST":
-        try:
-            moisture = int(request.form["moisture"])
-            moisture_limit = 40  # threshold
+@app.route("/pump/start")
+def start_pump():
+    global pump_status
+    pump_status = "ON"
+    return redirect(url_for('dashboard'))
 
-            if moisture < moisture_limit:
-                result = "Irrigation Needed 💧 — Soil moisture is too low."
-            else:
-                result = "No Irrigation Needed 🌤️ — Soil moisture is okay."
-
-            # save to history
-            history.append({"moisture": moisture, "result": result})
-
-        except ValueError:
-            result = "Invalid Input! Please enter a number."
-
-    return render_template("index.html", result=result)
-
-
-@app.route("/history")
-def view_history():
-    return render_template("history.html", history=history)
-
+@app.route("/pump/stop")
+def stop_pump():
+    global pump_status
+    pump_status = "OFF"
+    return redirect(url_for('dashboard'))
 
 if __name__ == "__main__":
     app.run(debug=True)
